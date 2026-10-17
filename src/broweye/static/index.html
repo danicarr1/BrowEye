@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BrowEye</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header>
+  <strong class="brand">BrowEye</strong>
+  <select id="session" title="Browser session (identity)"></select>
+  <button id="new-session" title="Open a new isolated browser session">+ Session</button>
+  <form id="nav" class="grow">
+    <input id="nav-url" placeholder="http://127.0.0.1:8081/  — open in the selected browser session" autocomplete="off">
+    <button>Go</button>
+  </form>
+  <nav id="tabs">
+    <button data-tab="traffic" class="active">Traffic</button>
+    <button data-tab="repeater">Repeater</button>
+    <button data-tab="compare">Compare</button>
+    <button data-tab="sitemap">Site map</button>
+  </nav>
+</header>
+<div id="status" role="status"></div>
+
+<main>
+  <section id="tab-traffic" class="tab active">
+    <form id="filters" class="row">
+      <input name="text" placeholder="URL contains">
+      <select name="method"><option value="">any method</option>
+        <option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option>
+        <option>DELETE</option><option>OPTIONS</option><option>HEAD</option></select>
+      <input name="status" placeholder="status: 200, 4xx" size="9">
+      <input name="host" placeholder="host" size="14">
+      <input name="body" placeholder="body contains" size="14">
+      <label><input type="checkbox" name="mine" checked> this session</label>
+      <button>Filter</button>
+      <a id="har" class="button" download="broweye.har">Export HAR</a>
+      <span id="count" class="muted"></span>
+    </form>
+    <div class="split">
+      <div class="pane list"><table id="flows"><thead><tr>
+        <th>#</th><th>Method</th><th>Host</th><th>Path</th><th>Status</th><th>Type</th><th>Size</th><th>ms</th>
+      </tr></thead><tbody></tbody></table></div>
+      <div class="pane detail" id="flow-detail"><p class="muted">Select a request.</p></div>
+    </div>
+  </section>
+
+  <section id="tab-repeater" class="tab">
+    <div class="split three">
+      <div class="pane drafts">
+        <div class="row"><button id="draft-new">+ New</button><button id="draft-curl">Import cURL</button></div>
+        <ul id="draft-list"></ul>
+      </div>
+      <div class="pane editor" id="editor"><p class="muted">Create a request or send one from Traffic.</p></div>
+      <div class="pane result" id="result"></div>
+    </div>
+  </section>
+
+  <section id="tab-compare" class="tab">
+    <div class="row">
+      <label>A <input id="cmp-a" placeholder="flow:… or exec:…" size="24"></label>
+      <label>B <input id="cmp-b" placeholder="flow:… or exec:…" size="24"></label>
+      <button id="cmp-go">Compare</button>
+      <label><input type="checkbox" id="cmp-volatile"> show volatile headers</label>
+    </div>
+    <div id="cmp-out"></div>
+  </section>
+
+  <section id="tab-sitemap" class="tab"><div id="sitemap"></div></section>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>

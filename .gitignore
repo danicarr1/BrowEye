@@ -1,0 +1,6 @@
+BrowEye-project/
+broweye-project/
+__pycache__/
+*.egg-info/
+.venv/
+.pytest_cache/

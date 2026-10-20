@@ -1,21 +1,22 @@
-# Qué haría en la versión 2
+# Roadmap: what version 2 would include
 
-Ordenado por valor y riesgo. Cada punto es independiente.
+Ordered by value and risk. Each item is independent.
 
-1. **Propagación de cookies dentro de una ejecución**: aplicar los `Set-Cookie` de un salto a los siguientes
-   (jar efímero por ejecución), con opción explícita de "escribir de vuelta al navegador".
-   Es la limitación que más afecta a flujos de login reales.
-2. **HTTP/2 en el Repeater** (`httpx[http2]`), seleccionable por borrador, para reproducir lo que hace el navegador.
-3. **Import de HAR** para reabrir trabajo hecho con otras herramientas.
-4. **Segundo origen de captura: proxy** (por ejemplo, mitmproxy como librería) que produzca los mismos `Flow`.
-   Así se captura cualquier cliente sin tocar Repeater, store ni UI. Requiere gestionar una CA local de forma segura.
-5. **Sistema de extensiones mínimo**: funciones Python registradas para tres puntos concretos
-   (analizar un flow, transformar un borrador antes de enviar, y añadir un panel de solo lectura).
-   No antes de tener al menos dos extensiones reales que lo justifiquen.
-6. **Comparación de autorización** (para pentesting autorizado): reenviar el mismo borrador con las cookies
-   de varias sesiones o identidades y comparar las respuestas. Es una extensión natural de los modos de cookies
-   y de `diff.py`, con límite de velocidad y lista de hosts en alcance obligatoria.
-7. Lista de hosts **en alcance** por proyecto: el Repeater se niega a enviar fuera de ella.
-8. Ejecución en un hilo aparte para escrituras grandes en SQLite, y paginación virtual en la tabla de tráfico.
-9. Cifrado opcional del directorio del proyecto (o al menos de los `storage_state`).
-10. Pruebas en Windows y macOS en CI (GitHub Actions con matriz de sistemas operativos).
+1. **Cookie propagation within an execution**: apply one hop's `Set-Cookie` headers to the following hops
+   (an ephemeral per-execution jar), with an explicit "write back to the browser" option.
+   This is the limitation that most affects real login flows.
+2. **HTTP/2 in the Repeater** (`httpx[http2]`), selectable per draft, to reproduce what the browser does.
+3. **HAR import**, to reopen work done with other tools.
+4. **Second capture source: a proxy** (for example, mitmproxy as a library) producing the same `Flow` objects.
+   This captures any client without touching the Repeater, store or UI. Requires managing a local CA securely.
+5. **Minimal extension system**: registered Python functions for three specific hook points
+   (analyze a flow, transform a draft before sending, and add a read-only panel).
+   Not before there are at least two real extensions that justify it.
+6. **Authorization comparison** (for authorized pentesting): replay the same draft with the cookies
+   of several sessions or identities and compare the responses. A natural extension of the cookie modes
+   and `diff.py`, with mandatory rate limiting and an in-scope host list.
+7. Per-project **in-scope host list**: the Repeater refuses to send outside it.
+8. A separate thread for large SQLite writes, and virtual scrolling in the traffic table.
+9. Optional encryption of the project directory (or at least of the `storage_state` files).
+10. Windows and macOS testing in CI (GitHub Actions with an OS matrix) — the workflow exists;
+    those jobs are allowed to fail until they are green.

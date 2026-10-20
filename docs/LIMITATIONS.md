@@ -1,46 +1,46 @@
-# Limitaciones conocidas (v0.1)
+# Known limitations (v0.1)
 
-## Qué tráfico se observa
+## What traffic is observed
 
-- **Solo el Chromium que lanza BrowEye.** No se ve el tráfico de otros navegadores, apps móviles ni otros programas
-  (para eso haría falta un proxy; ver ROADMAP).
-- **WebSockets**: no se capturan los frames. El handshake puede aparecer o no según el navegador.
-- **Respuestas en streaming** (SSE, descargas largas): el body puede no estar disponible o quedar incompleto.
-- **Bodies de petición no expuestos**: en subidas de archivos (`multipart` con archivos) o bodies en streaming,
-  Chromium puede no entregar el body. La UI lo indica con una nota ("request body not exposed by the browser").
-- **Bodies de respuestas de redirección (3xx)**: el navegador no los entrega.
-- **Recursos servidos desde caché o service workers** pueden aparecer con información parcial.
-- Límites de tamaño: 10 MB por body capturado y 20 MB por respuesta en el Repeater. Si se truncan, se indica con una nota.
-- `data:` y `blob:` se ignoran.
+- **Only the Chromium that BrowEye launches.** Traffic from other browsers, mobile apps or other programs is not visible
+  (that would require a proxy; see ROADMAP).
+- **WebSockets**: frames are not captured. The handshake may or may not appear, depending on the browser.
+- **Streaming responses** (SSE, long downloads): the body may be unavailable or incomplete.
+- **Request bodies not exposed**: for file uploads (`multipart` with files) or streamed bodies,
+  Chromium may not provide the body. The UI says so with a note ("request body not exposed by the browser").
+- **Redirect (3xx) response bodies**: the browser does not provide them.
+- **Resources served from cache or service workers** may appear with partial information.
+- Size limits: 10 MB per captured body and 20 MB per Repeater response. Truncation is flagged with a note.
+- `data:` and `blob:` URLs are ignored.
 
-## Diferencias entre navegador y Repeater
+## Differences between the browser and the Repeater
 
-- **Protocolo**: el navegador puede usar HTTP/2 o HTTP/3; el Repeater usa **HTTP/1.1**. Los servidores
-  que se comportan distinto por protocolo darán resultados distintos.
-- **Huella TLS**: diferente a la de Chromium. Algunos sistemas antibots responden distinto. No hay ni habrá
-  funciones para imitar huellas: no es un objetivo del proyecto.
-- **Orden y mayúsculas de headers**: el Repeater respeta el orden del borrador, pero `Host` va primero.
-  En HTTP/2 el navegador envía los nombres en minúsculas.
-- **Cookies en modo `session`**: se *leen* del jar del navegador. Los `Set-Cookie` que reciba el Repeater
-  **no** actualizan el navegador, y dentro de una cadena de redirecciones tampoco se aplican a los saltos siguientes.
-  Es una decisión explícita (el Repeater no altera la sesión del navegador), pero rompe flujos de login
-  que dependen de cookies puestas en un 302.
-- La autenticación Basic/Bearer configurada en el borrador vive en memoria: se pierde al reiniciar.
+- **Protocol**: the browser may use HTTP/2 or HTTP/3; the Repeater uses **HTTP/1.1**. Servers that behave
+  differently per protocol will give different results.
+- **TLS fingerprint**: differs from Chromium's. Some anti-bot systems respond differently. There are no, and will be no,
+  fingerprint-impersonation features: that is not a goal of this project.
+- **Header order and casing**: the Repeater respects the draft's order, but `Host` goes first.
+  Over HTTP/2 the browser sends header names in lowercase.
+- **Cookies in `session` mode**: they are *read* from the browser's jar. `Set-Cookie` headers received by the Repeater
+  do **not** update the browser, and within a redirect chain they are not applied to subsequent hops either.
+  This is an explicit decision (the Repeater does not alter the browser session), but it breaks login flows
+  that rely on cookies set by a 302.
+- Basic/Bearer authentication configured on a draft lives in memory: it is lost on restart.
 
-## Persistencia y seguridad
+## Persistence and security
 
-- La base de datos guarda cookies, tokens y bodies **en texto plano**. Los archivos `sessions/*.storage.json`
-  (sesiones reutilizables) también. Protege el directorio del proyecto.
-- La exportación cURL redacta `Cookie` y `Authorization` por defecto. **El HAR no las redacta**,
-  porque es una exportación fiel; revisa el archivo antes de compartirlo.
-- Los chequeos pasivos son pistas para un humano, no un escáner; hay falsos positivos y negativos.
+- The database stores cookies, tokens and bodies **in plain text**. The `sessions/*.storage.json` files
+  (reusable sessions) do too. Protect the project directory.
+- cURL export redacts `Cookie` and `Authorization` by default. **HAR export does not redact them**,
+  because it is a faithful export; review the file before sharing it.
+- Passive checks are hints for a human, not a scanner; expect false positives and false negatives.
 
-## Plataforma y escala
+## Platform and scale
 
-- Probado en Linux (headless, Chromium 141, Python 3.13). **Windows y macOS no se han probado**.
-  No hay código específico de plataforma salvo las señales (manejadas).
-- `--headed` requiere un entorno gráfico.
-- Un solo proceso y SQLite en el hilo del event loop: escribir bodies muy grandes puede pausar la UI unos milisegundos.
-  Probado con 150 peticiones simultáneas del navegador más 30 envíos concurrentes; no se han medido volúmenes mayores.
-- La tabla de tráfico mantiene como máximo 5000 filas en el DOM (los filtros consultan la base completa).
-- No hay import de HAR, proxy upstream, ni certificados de cliente.
+- Tested on Linux (headless, Chromium 141, Python 3.13). **Windows and macOS have not been tested**.
+  There is no platform-specific code other than signal handling (which is handled).
+- `--headed` requires a graphical environment.
+- A single process with SQLite on the event loop thread: writing very large bodies can pause the UI for a few milliseconds.
+  Tested with 150 concurrent browser requests plus 30 concurrent sends; larger volumes have not been measured.
+- The traffic table keeps at most 5000 rows in the DOM (filters query the full database).
+- No HAR import, no upstream proxy, no client certificates.

@@ -5,14 +5,36 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "broweye"
 version = "0.1.0"
-description = "Observe, edit, replay and compare HTTP traffic from a real browser"
+description = "See what your browser actually sends: observe, edit, replay and compare HTTP traffic from a real browser"
+readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
+authors = [{ name = "danielcarrillo-sh" }]
+keywords = ["http", "https", "browser", "playwright", "debugging", "repeater", "security-testing", "har"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Security",
+    "Topic :: Software Development :: Debuggers",
+]
 dependencies = [
     "playwright>=1.45",
     "httpx[brotli,zstd]>=0.27,<1",
     "aiohttp>=3.9",
 ]
+
+[project.urls]
+Homepage = "https://github.com/danicarr1/BrowEye"
+Documentation = "https://github.com/danicarr1/BrowEye/tree/main/docs"
+Issues = "https://github.com/danicarr1/BrowEye/issues"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=0.23"]
